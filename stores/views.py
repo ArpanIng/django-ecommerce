@@ -1,3 +1,5 @@
+from django.core.paginator import Paginator
+from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 
 from categories.models import Category
@@ -7,16 +9,25 @@ from .models import Product
 
 
 def store_view(request, category_slug=None):
-    # categories = None
-    # products = None
-
     if category_slug:
         categories = get_object_or_404(Category, slug=category_slug)
-        products = Product.objects.filter(category=categories, is_available=True)
-        total_products_count = products.count()
+        product_list = Product.objects.filter(
+            category=categories,
+            is_available=True,
+        ).order_by("id")
+        paginator = Paginator(product_list, per_page=6)
+        page_number = request.GET.get("page")
+        products = paginator.get_page(number=page_number)
+        total_products_count = product_list.count()
     else:
-        products = Product.objects.filter(is_available=True)
-        total_products_count = products.count()
+        product_list = Product.objects.filter(is_available=True).order_by("id")
+        paginator = Paginator(product_list, per_page=2)
+        page_number = request.GET.get("page")
+        products = paginator.get_page(
+            number=page_number
+        )  # when using get_page, EmptyPage and PageNotAnInteger are not required
+
+        total_products_count = product_list.count()
 
     context = {
         "products": products,
@@ -45,3 +56,7 @@ def product_detail_view(request, category_slug, product_slug):
         "in_cart": in_cart,
     }
     return render(request, "stores/product_detail.html", context)
+
+
+def search_view(request):
+    pass
