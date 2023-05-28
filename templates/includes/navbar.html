@@ -49,7 +49,6 @@
           <a href="{% url 'homepage' %}" class="brand-wrap">
             <img class="logo" src="{% static './images/logo.png' %}" />
           </a>
-          <!-- brand-wrap.// -->
         </div>
         <div class="col-lg col-sm col-md col-6 flex-grow-0">
           <div class="category-wrap dropdown d-inline-block float-right">
@@ -97,12 +96,22 @@
         <div class="col-lg-3 col-sm-6 col-8 order-2 order-lg-3">
           <div class="d-flex justify-content-end mb-3 mb-lg-0">
             <div class="widget-header">
-              <small class="title text-muted">Welcome guest!</small>
+              <small class="title text-muted"
+                >Welcome {{ request.user.username }}!
+              </small>
+              {% if request.user.is_authenticated %}
               <div>
-                <a href="./signin.html">Sign in</a>
+                <a href="#">Dashboard</a>
                 <span class="dark-transp"> | </span>
-                <a href="./register.html"> Register</a>
+                <a href="{% url 'accounts:logout' %}">Logout</a>
               </div>
+              {% else %}
+              <div>
+                <a href="{% url 'accounts:login' %}">Sign in</a>
+                <span class="dark-transp"> | </span>
+                <a href="{% url 'accounts:register' %}">Register</a>
+              </div>
+              {% endif %}
             </div>
             <a href="{% url 'carts:cart' %}" class="widget-header pl-3 ml-3">
               <div class="icon icon-sm rounded-circle border">
@@ -113,7 +122,6 @@
               </span>
             </a>
           </div>
-          <!-- widgets-wrap.// -->
         </div>
         <!-- col.// -->
       </div>
