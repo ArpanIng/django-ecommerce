@@ -21,7 +21,7 @@ def store_view(request, category_slug=None):
         total_products_count = product_list.count()
     else:
         product_list = Product.objects.filter(is_available=True).order_by("id")
-        paginator = Paginator(product_list, per_page=2)
+        paginator = Paginator(product_list, per_page=6)
         page_number = request.GET.get("page")
         products = paginator.get_page(
             number=page_number
@@ -56,7 +56,3 @@ def product_detail_view(request, category_slug, product_slug):
         "in_cart": in_cart,
     }
     return render(request, "stores/product_detail.html", context)
-
-
-def search_view(request):
-    pass
