@@ -1,5 +1,5 @@
 from django.core.paginator import Paginator
-from django.http import HttpResponse
+from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
 
 from categories.models import Category
@@ -56,3 +56,21 @@ def product_detail_view(request, category_slug, product_slug):
         "in_cart": in_cart,
     }
     return render(request, "stores/product_detail.html", context)
+
+
+def search_view(request):
+    if "q" in request.GET:
+        q = request.GET.get("q")
+    else:
+        q = ""
+
+    products = Product.objects.filter(
+        Q(name__icontains=q) | Q(description__icontains=q)
+    )
+
+    context = {
+        "products": products,
+        "products_count": products.count(),
+        "queryset": q,
+    }
+    return render(request, "stores/store.html", context)
