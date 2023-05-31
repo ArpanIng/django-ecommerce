@@ -26,7 +26,9 @@
         </div>
 
         <div class="form-group">
-          <a href="#" class="float-right">Forgot password?</a>
+          <a href="{% url 'accounts:password_reset' %}" class="float-right">
+            Forgot password?
+          </a>
         </div>
         <div class="form-group">
           <button type="submit" class="btn btn-primary btn-block">Login</button>

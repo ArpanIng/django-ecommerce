@@ -1,7 +1,8 @@
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout, views
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
 
 from .forms import RegistrationModelForm
 from .models import Account
@@ -66,3 +67,22 @@ def logout_view(request):
 @login_required
 def dashboard_view(request):
     return render(request, "accounts/dashboard.html")
+
+
+class CustomPasswordResetView(views.PasswordResetView):
+    email_template_name = "accounts/password_reset_email.html"
+    success_url = reverse_lazy("accounts:password_reset_done")
+    template_name = "accounts/password_reset_form.html"
+
+
+class CustomPasswordResetDoneView(views.PasswordResetDoneView):
+    template_name = "accounts/password_reset_done.html"
+
+
+class CustomPasswordResetConfirmView(views.PasswordResetConfirmView):
+    success_url = reverse_lazy("accounts:password_reset_complete")
+    template_name = "accounts/password_reset_confirm.html"
+
+
+class CustomPasswordResetCompleteView(views.PasswordResetCompleteView):
+    template_name = "accounts/password_reset_complete.html"
