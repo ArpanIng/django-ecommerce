@@ -1,11 +1,13 @@
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 
-from categories.models import Category
 from carts.models import CartItem
 from carts.views import _cart_id
-from .models import Product
+from categories.models import Category
+
+from .forms import ReviewModelForm
+from .models import Product, Review
 
 
 def store_view(request, category_slug=None):
@@ -74,3 +76,26 @@ def search_view(request):
         "queryset": q,
     }
     return render(request, "stores/store.html", context)
+
+
+def submit_review_view(request, product_id):
+    URL = request.META.get("HTTP_REFERER")  # stores previous URL
+
+    # list of active reviews for a product
+    # reviews = product.reviews.filter(status=True)
+    if request.method == "POST":
+        try:
+            review = Review.objects.get(
+                user__id=request.user.id,
+                product__id=product_id,
+            )
+            form = ReviewModelForm(request.POST, instance=review)
+            form.save()
+            return redirect(URL)  # redirects to current page
+
+        except Review.DoesNotExist:
+            form = ReviewModelForm(request.POST)
+            if form.is_valid():
+                data = data
+                review = form.cleaned_data["review"]
+                rating = form.cleaned_data["rating"]

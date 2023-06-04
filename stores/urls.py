@@ -12,4 +12,5 @@ urlpatterns = [
         views.product_detail_view,
         name="product_detail",
     ),
+    path("submit-review/<product_id>/", views.submit_review_view, name="submit_review"),
 ]
