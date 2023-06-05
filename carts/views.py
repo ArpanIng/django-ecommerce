@@ -1,8 +1,10 @@
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, redirect, get_object_or_404
 
 # Product model is imported from stores app in models.py
-from stores.models import Product
+from stores.models import Product, Variation
 from .models import Cart, CartItem
 
 
@@ -16,8 +18,23 @@ def _cart_id(request):
     return cart
 
 
+@login_required
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
+    product_variation = []
+    if request.method == "POST":
+        for item in request.POST:
+            key = item
+            value = request.POST[key]
+            try:
+                variation = Variation.objects.get(
+                    product=product,
+                    variation_category__iexact=key,
+                    variation_value__iexact=value,
+                )
+                product_variation.append(variation)
+            except Variation.DoesNotExist:
+                pass
     try:
         # get the cart using the cart_id present in the session
         cart = Cart.objects.get(cart_id=_cart_id(request))
@@ -36,6 +53,7 @@ def add_to_cart(request, product_id):
     return redirect("carts:cart")
 
 
+@login_required
 def cart(request, total=0, total_quantity=0, cart_items=None):
     try:
         tax = 0
