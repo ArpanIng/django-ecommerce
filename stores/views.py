@@ -44,18 +44,9 @@ def product_detail_view(request, category_slug, product_slug):
         category__slug=category_slug,
         slug=product_slug,
     )
-    # if a product is in a cart returns True else False
-    try:
-        in_cart = CartItem.objects.filter(
-            cart__cart_id=_cart_id(request),
-            product=product,
-        ).exists()
-    except:
-        pass
 
     context = {
         "product": product,
-        "in_cart": in_cart,
     }
     return render(request, "stores/product_detail.html", context)
 
