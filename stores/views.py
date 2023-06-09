@@ -4,10 +4,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 
 from carts.models import CartItem
 from carts.views import _cart_id
-from categories.models import Category
 
 from .forms import ReviewModelForm
-from .models import Product, Review
+from .models import Category, Product, Review
 
 
 def store_view(request, category_slug=None):

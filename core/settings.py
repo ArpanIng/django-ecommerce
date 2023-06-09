@@ -32,7 +32,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # local apps
     "accounts.apps.AccountsConfig",
-    "categories.apps.CategoriesConfig",
     "carts.apps.CartsConfig",
     "stores.apps.StoresConfig",
 ]
@@ -62,7 +61,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                "categories.context_processors.menu_links",  # context-processors
+                "stores.context_processors.menu_links",  # context-processors
                 "carts.context_processors.counter",  # context-processors
             ],
         },
