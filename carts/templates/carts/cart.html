@@ -1,7 +1,8 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %}
+
+{% block content %}
 <section class="section-content padding-y bg">
   <div class="container">
-    <!-- ============================ COMPONENT 1 ================================= -->
     {% if cart_items %}
     <div class="row">
       <aside class="col-lg-9">
@@ -15,6 +16,7 @@
                 <th scope="col" class="text-right" width="200"></th>
               </tr>
             </thead>
+
             <tbody>
               {% for cart_item in cart_items %}
               <tr>
@@ -34,8 +36,11 @@
                         {{ cart_item.product.name }}
                       </a>
                       <p class="text-muted small">
-                        Matrix: 25 Mpx <br />
-                        Brand: Canon
+                        {% if cart_item.variations.all %}
+                          {% for item in cart_item.variations.all %}
+                          {{ item.variation_category|capfirst }}: {{ item.variation_value|capfirst }}<br>
+                          {% endfor %}
+                        {% endif %}
                       </p>
                     </figcaption>
                   </figure>
@@ -81,11 +86,11 @@
                       ${{ cart_item.product.price }} each
                     </small>
                   </div>
-                  <!-- price-wrap .// -->
                 </td>
                 <td class="text-right">
                   <a
                     href="{% url 'carts:remove_cart_item' cart_item.product.id %}"
+                    onclick="return confirm('Are you sure you want to delete these items?')"
                     class="btn btn-danger"
                   >
                     Remove
@@ -96,9 +101,8 @@
             </tbody>
           </table>
         </div>
-        <!-- card.// -->
       </aside>
-      <!-- col.// -->
+
       <aside class="col-lg-3">
         <div class="card">
           <div class="card-body">
@@ -129,20 +133,16 @@
         </div>
         <!-- card.// -->
       </aside>
-      <!-- col.// -->
     </div>
     {% else %}
     <h2 class="text-center">Your Shopping Cart is Empty.</h2>
     <br />
     <div class="text-center">
-      <a href="{% url 'stores:store' %}" class="btn btn-primary"
-        >Continue Shopping
+      <a href="{% url 'stores:store' %}" class="btn btn-primary">
+        Continue Shopping
       </a>
     </div>
     {% endif %}
-    <!-- row.// -->
-    <!-- ============================ COMPONENT 1 END .// ================================= -->
   </div>
-  <!-- container .//  -->
 </section>
 {% endblock content %}
