@@ -101,22 +101,23 @@ def cart(request, total=0, total_quantity=0, cart_items=None):
     return render(request, "carts/cart.html", context)
 
 
-def remove_cart(request, product_id):
-    """Decrease cart_item quantity and delete cart if cart_item quantity is less than 1"""
+def remove_cart(request, product_id, cart_item_id):
+    """Decrease cart_item quantity"""
     cart = Cart.objects.get(cart_id=_cart_id(request))
     product = get_object_or_404(Product, id=product_id)
-    cart_item = CartItem.objects.get(product=product, cart=cart)
-    if cart_item.quantity > 1:
-        cart_item.quantity -= 1
-        cart_item.save()
-    else:
-        cart_item.delete()
+    try:
+        cart_item = CartItem.objects.get(id=cart_item_id, product=product, cart=cart)
+        if cart_item.quantity > 1:
+            cart_item.quantity -= 1
+            cart_item.save()
+    except:
+        pass
     return redirect("carts:cart")
 
 
-def remove_cart_item(request, product_id):
+def remove_cart_item(request, product_id, cart_item_id):
     cart = Cart.objects.get(cart_id=_cart_id(request))
     product = get_object_or_404(Product, id=product_id)
-    cart_item = CartItem.objects.get(product=product, cart=cart)
+    cart_item = CartItem.objects.get(id=cart_item_id, product=product, cart=cart)
     cart_item.delete()
     return redirect("carts:cart")
