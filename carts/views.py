@@ -18,7 +18,6 @@ def _cart_id(request):
     return cart
 
 
-@login_required
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     product_variation = []  # list of posted 'POST' variation
@@ -123,6 +122,7 @@ def remove_cart_item(request, product_id, cart_item_id):
     return redirect("carts:cart")
 
 
+@login_required
 def checkout_view(request, total=0, total_quantity=0, cart_items=None):
     try:
         tax = 0

@@ -4,6 +4,9 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 
+from carts.models import Cart, CartItem
+from carts.views import _cart_id
+
 from .forms import RegistrationModelForm
 from .models import Account
 
@@ -50,6 +53,16 @@ def login_view(request):
         password = request.POST["password"]
         user = authenticate(request, email=email, password=password)
         if user is not None:
+            try:
+                cart = Cart.objects.get(cart_id=_cart_id(request))
+                cart_item_exists = CartItem.objects.filter(cart=cart).exists()
+                if cart_item_exists:
+                    cart_item = CartItem.objects.filter(cart=cart)
+                    for item in cart_item:
+                        item.user = user
+                        item.save()
+            except:
+                pass
             login(request, user)
             return redirect("homepage")
         else:
